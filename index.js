@@ -113,13 +113,17 @@ async function updatePlayerCount() {
 }
 
 async function getPlayers() {
-  let craftClient = new QueryClient();
+    let craftClient = new QueryClient();
 
-  let basic = await craftClient.queryBasic('96.230.114.156', 25566, AbortSignal.timeout(5000));
-
-  await craftClient.close();
-
-  console.log('Players: ', basic)
-
-  return basic.numplayers;
+    try {
+        let basic = await craftClient.queryBasic('96.230.114.156', 25566, AbortSignal.timeout(5000));
+        
+        await craftClient.close();
+        
+        console.log('Players: ', basic)
+        
+        return basic.numplayers;
+    } catch (error){
+        console.log('Could not query server', error)
+    }
 }
