@@ -10,19 +10,14 @@ const client = new Client({intents: [GatewayIntentBits.Guilds]});
 
 let statusChannelId = JSON.parse(readFileSync('data.json'))["statusChannelId"];
 
-
-console.log('Status Channel Id: ', statusChannelId);
-
 client.once(Events.ClientReady, (readyClient) => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 
-    setInterval(updatePlayerCount, 30000)
+    setInterval(updatePlayerCount, 120000)
 })
 
 //Log in to Discord with Bot's token
 client.login(token);
-let numPlayers = await getPlayers();
-console.log('numPlayers:', numPlayers);
 
 client.on(Events.GuildCreate, async (guild) => {
     console.log('GuildCreate')
@@ -98,7 +93,6 @@ function createStatusChannel(guild, numPlayers) {
 }
 
 async function updatePlayerCount() {
-    console.log('Presence Update')
     let numPlayers = await getPlayers();
     const guild = client.guilds.cache.at(0);
     guild.channels.fetch(statusChannelId)
@@ -107,7 +101,9 @@ async function updatePlayerCount() {
             createStatusChannel(guild, numPlayers);
         } else {
             guild.channels.edit(statusChannelId, {name: `Online Players: ${numPlayers}`})
-            .then(console.log("Updated online players"))
+            .then((updatedChannel) => {
+                console.log(`Updated online players: ${updatedChannel.name}`)
+            })  
         }
     })
 }
