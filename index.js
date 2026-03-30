@@ -13,7 +13,13 @@ let statusChannelId = JSON.parse(readFileSync('data.json'))["statusChannelId"];
 client.once(Events.ClientReady, (readyClient) => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 
-    setInterval(updatePlayerCount, 300000)
+    setInterval(async () => {
+        try {
+            updatePlayerCount()
+        } catch (error) {
+            console.log('Error updating: ', error)
+        }
+    }, 300000)
 })
 
 //Log in to Discord with Bot's token
@@ -98,10 +104,12 @@ async function updatePlayerCount() {
 async function getPlayers() {
     let pingClient = new JavaPingClient();
     try {
+        // Use 127.0.0.1 if running this bot on the same machine as the MC server
         let response = await pingClient.ping('96.230.114.156', 25565, {signal: AbortSignal.timeout(5000)});
         console.log('Ping: ', response)
         return response.players.online;
     } catch (error){
         console.log('Could not query server', error)
+        return 0
     }
 }
