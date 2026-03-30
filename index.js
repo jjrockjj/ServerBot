@@ -13,7 +13,7 @@ let statusChannelId = JSON.parse(readFileSync('data.json'))["statusChannelId"];
 client.once(Events.ClientReady, (readyClient) => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 
-    setInterval(updatePlayerCount, 120000)
+    setInterval(updatePlayerCount, 600000)
 })
 
 //Log in to Discord with Bot's token
@@ -94,6 +94,7 @@ function createStatusChannel(guild, numPlayers) {
 
 async function updatePlayerCount() {
     let numPlayers = await getPlayers();
+    console.log('Updating Player Count: ', numPlayers)
     const guild = client.guilds.cache.at(0);
     guild.channels.fetch(statusChannelId)
     .then(channel => {
@@ -102,6 +103,7 @@ async function updatePlayerCount() {
         } else {
             guild.channels.edit(statusChannelId, {name: `Online Players: ${numPlayers}`})
             .then((updatedChannel) => {
+                console.log(updatedChannel)
                 console.log(`Updated online players: ${updatedChannel.name}`)
             })  
         }
