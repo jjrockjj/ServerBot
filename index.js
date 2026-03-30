@@ -13,7 +13,7 @@ let statusChannelId = JSON.parse(readFileSync('data.json'))["statusChannelId"];
 client.once(Events.ClientReady, (readyClient) => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 
-    setInterval(updatePlayerCount, 600000)
+    setInterval(updatePlayerCount, 300000)
 })
 
 //Log in to Discord with Bot's token
