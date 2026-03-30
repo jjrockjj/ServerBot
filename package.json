@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --watch index.js --legacy-watch index.js"
+    "start": "nodemon --watch index.js"
   },
   "keywords": [],
   "author": "",
