@@ -1,5 +1,5 @@
-import {Client, Events, Guild, ChannelType, GatewayIntentBits, PermissionFlagsBits } from 'discord.js';
-import {QueryClient} from 'craftping'
+import {Client, Events, ChannelType, GatewayIntentBits, PermissionFlagsBits } from 'discord.js';
+import {JavaPingClient} from 'craftping'
 import 'dotenv/config';
 import {readFileSync} from 'node:fs'
 import {writeFile} from 'node:fs/promises'
@@ -24,21 +24,6 @@ client.on(Events.GuildCreate, async (guild) => {
     let numPlayers = await getPlayers();
     createStatusChannel(guild, numPlayers);
 })
-
-// client.on(Events.PresenceUpdate, async () => {
-//     console.log('Presence Update')
-//     let numPlayers = await getPlayers();
-//     const guild = client.guilds.cache.get("GUILD_ID")
-//     guild.channels.fetch(statusChannelId)
-//     .then(channel => {
-//         if (!channel) {
-//             createStatusChannel(guild, numPlayers);
-//         } else {
-//             guild.channels.edit(statusChannelId, {name: `Online Players: ${numPlayers}`})
-//             .then(console.log("Updated online players"))
-//         }
-//     })
-// })
 
 function createStatusChannel(guild, numPlayers) {
     console.log('Create Channel')
@@ -111,16 +96,11 @@ async function updatePlayerCount() {
 }
 
 async function getPlayers() {
-    let craftClient = new QueryClient();
-
+    let pingClient = new JavaPingClient();
     try {
-        let basic = await craftClient.queryBasic('96.230.114.156', 25566, AbortSignal.timeout(5000));
-        
-        await craftClient.close();
-        
-        console.log('Players: ', basic)
-        
-        return basic.numplayers;
+        let response = await pingClient.ping('96.230.114.156', 25565, {signal: AbortSignal.timeout(5000)});
+        console.log('Ping: ', response)
+        return response.players.online;
     } catch (error){
         console.log('Could not query server', error)
     }
