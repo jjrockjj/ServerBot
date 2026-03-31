@@ -15,7 +15,7 @@ client.once(Events.ClientReady, (readyClient) => {
 
     setInterval(async () => {
         try {
-            updatePlayerCount()
+            await updatePlayerCount()
         } catch (error) {
             console.log('Error updating: ', error)
         }
@@ -28,10 +28,10 @@ client.login(token);
 client.on(Events.GuildCreate, async (guild) => {
     console.log('GuildCreate')
     let numPlayers = await getPlayers();
-    createStatusChannel(guild, numPlayers);
+    await createStatusChannel(guild, numPlayers);
 })
 
-function createStatusChannel(guild, numPlayers) {
+async function createStatusChannel(guild, numPlayers) {
     console.log('Create Channel')
     if (!statusChannelId) {
         guild.channels.create({
