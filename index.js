@@ -87,18 +87,20 @@ async function updatePlayerCount() {
     let numPlayers = await getPlayers();
     console.log('Updating Player Count: ', numPlayers)
     const guild = client.guilds.cache.at(0);
-    guild.channels.fetch(statusChannelId)
-    .then(channel => {
-        if (!channel) {
-            createStatusChannel(guild, numPlayers);
-        } else {
-            guild.channels.edit(statusChannelId, {name: `Online Players: ${numPlayers}`})
-            .then((updatedChannel) => {
-                console.log(updatedChannel)
-                console.log(`Updated online players: ${updatedChannel.name}`)
-            })  
+    let channel = await guild.channels.fetch(statusChannelId)
+
+    if (!channel) {
+        createStatusChannel(guild, numPlayers);
+    } else {
+        let updatedChannel = await guild.channels.edit(statusChannelId, {name: `Online Players: ${numPlayers}`})
+        if (!updatedChannel) {}
+        else {
+            console.log(updatedChannel)
+            console.log(`Updated online players: ${updatedChannel.name}`)
         }
-    })
+
+    }
+    
 }
 
 async function getPlayers() {
